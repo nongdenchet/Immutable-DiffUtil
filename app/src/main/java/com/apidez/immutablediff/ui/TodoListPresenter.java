@@ -74,10 +74,9 @@ class TodoListPresenter {
 
     @SuppressWarnings("Convert2streamapi")
     private List<TodoViewModel> toViewModels(List<Todo> todos) {
-        List<TodoViewModel> viewModels = new ArrayList<>(todos.size());
-        for (Todo todo : todos) {
-            viewModels.add(new TodoViewModel(todo));
-        }
-        return viewModels;
+        return Observable.fromIterable(todos)
+                .map(TodoViewModel::new)
+                .toList()
+                .blockingGet();
     }
 }
