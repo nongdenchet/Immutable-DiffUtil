@@ -1,4 +1,4 @@
-package com.apidez.immutablediff.util;
+package com.apidez.immutablediff.util.rx;
 
 import io.reactivex.Scheduler;
 

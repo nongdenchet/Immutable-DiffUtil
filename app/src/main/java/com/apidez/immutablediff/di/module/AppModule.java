@@ -3,8 +3,8 @@ package com.apidez.immutablediff.di.module;
 import android.content.Context;
 
 import com.apidez.immutablediff.di.scope.ApplicationScope;
-import com.apidez.immutablediff.util.IOThreadSchedulers;
-import com.apidez.immutablediff.util.ThreadSchedulers;
+import com.apidez.immutablediff.util.rx.IOThreadSchedulers;
+import com.apidez.immutablediff.util.rx.ThreadSchedulers;
 
 import javax.inject.Named;
 

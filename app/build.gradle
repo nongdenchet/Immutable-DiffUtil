@@ -1,5 +1,6 @@
 apply plugin: 'com.android.application'
 apply plugin: 'me.tatarka.retrolambda'
+apply plugin: 'de.mobilej.unmock'
 
 android {
     compileSdkVersion 25
@@ -24,6 +25,10 @@ android {
     }
 }
 
+unMock {
+    keepStartingWith "android.util."
+}
+
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
     androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
@@ -39,4 +44,5 @@ dependencies {
     testCompile 'junit:junit:4.12'
     testCompile 'org.mockito:mockito-core:2.5.5'
     testCompile 'junit:junit:4.12'
+    unmock 'org.robolectric:android-all:4.3_r2-robolectric-0'
 }

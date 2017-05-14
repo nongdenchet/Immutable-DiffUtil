@@ -3,11 +3,12 @@ package com.apidez.immutablediff.ui;
 import com.apidez.immutablediff.data.model.Todo;
 import com.apidez.immutablediff.data.repo.TodoRepo;
 import com.apidez.immutablediff.di.scope.ActivityScope;
-import com.apidez.immutablediff.util.EchoTransformer;
-import com.apidez.immutablediff.util.SchedulersTransformer;
-import com.apidez.immutablediff.util.ThreadSchedulers;
+import com.apidez.immutablediff.util.diffutil.DiffCalculator;
+import com.apidez.immutablediff.util.rx.EchoTransformer;
+import com.apidez.immutablediff.util.rx.SchedulersTransformer;
+import com.apidez.immutablediff.util.rx.ThreadSchedulers;
 
-import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -22,20 +23,20 @@ import static com.apidez.immutablediff.di.module.AppModule.IO_THREAD;
 class TodoListPresenter {
     private final TodoListScreen todoListScreen;
     private final TodoRepo todoRepo;
-    private final TodoDiffCalculator todoDiffCalculator;
+    private final DiffCalculator diffCalculator;
     private final ThreadSchedulers threadSchedulers;
 
-    private List<TodoViewModel> todos = new ArrayList<>();
+    private List<TodoViewModel> todos = Collections.emptyList();
     private CompositeDisposable disposables = new CompositeDisposable();
 
     @Inject
     public TodoListPresenter(TodoListScreen todoListScreen,
                              TodoRepo todoRepo,
-                             TodoDiffCalculator todoDiffCalculator,
+                             DiffCalculator diffCalculator,
                              @Named(IO_THREAD) ThreadSchedulers threadSchedulers) {
         this.todoListScreen = todoListScreen;
         this.todoRepo = todoRepo;
-        this.todoDiffCalculator = todoDiffCalculator;
+        this.diffCalculator = diffCalculator;
         this.threadSchedulers = threadSchedulers;
     }
 
@@ -48,7 +49,8 @@ class TodoListPresenter {
         disposables.add(todoRepo.getTodos()
                 .map(this::toViewModels)
                 .compose(new EchoTransformer<>(todos))
-                .map(todoDiffCalculator::calculate)
+                .map(TodoDiffCallback::new)
+                .map(diffCalculator::calculate)
                 .compose(new SchedulersTransformer<>(threadSchedulers))
                 .subscribe(result -> {
                     todos = result.second;
